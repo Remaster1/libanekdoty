@@ -25,3 +25,11 @@ category = Categories().get_random_category()
 jokes = Jokes(category["url"]).get_all_jokes()
 ```
 
+```python
+# Get jokes from selected page in random category
+from libanekdoty.categories import Categories
+from libanekdoty.jokes import Jokes
+category = Categories().get_random_category()
+jokes = Jokes(category["url"]).get_jokes_from_selected_page(2)
+```
+
