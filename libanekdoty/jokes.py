@@ -17,8 +17,33 @@ class Jokes:
         self.URL = category_url
         self.parser_type = "lxml" if lxml else "html.parser"
 
+    def get_jokes_from_selected_page(self, num: int) -> list[dict[str, Any]]:
+        r"""
+        Returns jokes from the selected page
+        :param num: Page number
+        """
+        url = self.URL
+        jokes = []
+
+        if num > 1:
+            url = f"{self.URL}{num}/"
+
+        request = requests.get(url)
+
+        if request.status_code == 404:
+            raise LibanekdotyException("Server returned 404")
+
+        parser = BeautifulSoup(request.text, self.parser_type)
+
+        joke_list_element = parser.find("ul", {"class": "item-list"}).find_all("li", recursive=False)
+        for joke in joke_list_element:
+            joke_text = joke.find("div", {"class": "holder-body"}).p.text
+            top = joke.find("div", {"class": "like-counter"}).text
+            jokes.append({"text": joke_text, "top": top})
+        return jokes
+
     def get_all_jokes(self) -> list[dict[str, Any]]:
-        """Get all jokes from category"""
+        r"""Get all jokes from category"""
         jokes = []
         current_url = self.URL
 
@@ -41,5 +66,6 @@ class Jokes:
 
             if next_page_link is None:  # checks that the link to the next page is not None
                 break
+
             current_url = next_page_link["href"]
         return jokes
