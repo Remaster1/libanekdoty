@@ -24,12 +24,16 @@ class Categories:
             Return all joke categories
         """
         categories = []
+
         request = requests.get(self.URL)
+
         if request.status_code == 404:
             raise LibanekdotyException("Server returned 404")
+
         parser = BeautifulSoup(request.text, self.parser_type)
-        category_list = parser.find("div", {"class": "category-list"}).find_all("li")
-        for category in category_list:
+
+        category_list_element = parser.find("div", {"class": "category-list"}).find_all("li")
+        for category in category_list_element:
             link = category.a
             name = link.text
             url = link["href"]
