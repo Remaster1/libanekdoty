@@ -14,19 +14,19 @@ class Jokes:
         :param category_url: Jokes category URL
         :param lxml: Enable lxml parser. Parsing speed may increase (external dependency)
         """
-        self.URL = category_url
+        self._URL = category_url
         self.parser_type = "lxml" if lxml else "html.parser"
 
-    def get_jokes_from_selected_page(self, num: int) -> list[dict[str, Any]]:
+    def get_jokes_from_selected_page(self, page_num: int) -> list[dict[str, Any]]:
         r"""
         Returns jokes from the selected page
-        :param num: Page number
+        :param page_num: Page number
         """
-        url = self.URL
+        url = self._URL
         jokes = []
 
-        if num > 1:
-            url = f"{self.URL}{num}/"
+        if page_num > 1:
+            url = f"{self._URL}{page_num}/"
 
         request = requests.get(url)
 
@@ -45,7 +45,7 @@ class Jokes:
     def get_all_jokes(self) -> list[dict[str, Any]]:
         r"""Get all jokes from category"""
         jokes = []
-        current_url = self.URL
+        current_url = self._URL
 
         while True:
             request = requests.get(current_url)
@@ -69,3 +69,4 @@ class Jokes:
 
             current_url = next_page_link["href"]
         return jokes
+

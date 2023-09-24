@@ -16,7 +16,7 @@ class Categories:
         r"""
         :param lxml: Enable lxml parser. Parsing speed may increase (external dependency)
         """
-        self.URL = "https://anekdoty.ru/"
+        self._URL = "https://anekdoty.ru/"
         self.parser_type = "lxml" if lxml else "html.parser"
 
     def get_all_categories(self) -> list[dict[str, Any]]:
@@ -25,7 +25,7 @@ class Categories:
         """
         categories = []
 
-        request = requests.get(self.URL)
+        request = requests.get(self._URL)
 
         if request.status_code == 404:
             raise LibanekdotyException("Server returned 404")
