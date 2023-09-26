@@ -26,7 +26,7 @@ class Jokes:
         jokes = []
 
         if page_num > 1:
-            url = f"{self._URL}{page_num}/"
+            url = f"{url}{page_num}/"
 
         request = requests.get(url)
 
@@ -70,3 +70,15 @@ class Jokes:
             current_url = next_page_link["href"]
         return jokes
 
+    def get_number_of_pages(self) -> str:
+        """Get the number of pages with jokes """
+
+        request = requests.get(self._URL)
+
+        if request.status_code == 404:
+            raise LibanekdotyException("Server returned 404")
+
+        parser = BeautifulSoup(request.text, self.parser_type)
+
+        page_list = parser.find_all("li", {"class": "pagination-holder-item"})
+        return page_list[-1].text
